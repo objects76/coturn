@@ -1,3 +1,31 @@
+
+# setup dev-env
+* Edit from Windows VSCode.
+  * https://code.visualstudio.com/docs/remote/wsl
+  * code --remote wsl+Ubuntu-18.04 /home/jjkim/coturn
+
+* Setup toolchain.
+  ```sh
+  sudo apt update
+  sudo apt upgrade
+  sudo apt-get install build-essential
+  ```
+
+# Coturn config
+```config
+// turnserver.config 
+listening-port=3478 
+tls-listening-port=5349 
+listening-ip=10.1.102.41    
+verbose 
+lt-cred-mech 
+#use-auth-secret 
+#static-auth-secret=3c3debc794f57330b631d2f03f351d08d1b56694ac4ab819875f0c0f76c0d86c 
+server-name=jjkim.com 
+realm=jjkim.com
+```
+
+
 [![Build Status](https://travis-ci.org/coturn/coturn.svg?branch=master)](https://travis-ci.org/coturn/coturn)
 
 **_This project evolved from rfc5766-turn-server project (https://code.google.com/p/rfc5766-turn-server/). There are many new advanced TURN specs which are going far beyond the original RFC 5766 document. This project takes the code of rfc5766-turn-server as the starter, and adds new advanced features to it._**
