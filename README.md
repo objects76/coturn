@@ -9,8 +9,27 @@
   sudo apt update
   sudo apt upgrade
   sudo apt-get install build-essential
+  sudo apt-get install make gcc
+  sudo apt-get install g++
+
+  #sudo apt-get install ginstall
+  sudo apt-get install openssl-devel libevent libevent-devel
+  sudo apt-get install libssl-dev
+  sudo apt-get install libsqlite3
+  sudo apt-get install sqlite3
+  sudo apt-get install libsqlite3-dev
+  sudo apt-get install mysql-client
+  sudo apt-get install libmysqlclient-dev
+  sudo apt-get install libhiredis-dev
   ```
 
+# Build
+ ```sh
+  cd coturn/
+  .configure
+  make
+  sudo make install
+ ```
 # Coturn config
 ```config
 // turnserver.config 
@@ -23,7 +42,19 @@ lt-cred-mech
 #static-auth-secret=3c3debc794f57330b631d2f03f351d08d1b56694ac4ab819875f0c0f76c0d86c 
 server-name=jjkim.com 
 realm=jjkim.com
+
+$ sudo turnadmin -a -u jjkim -r jjkim.com -p 12345
 ```
+
+# Coturn checking
+ * https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
+    * STUN or TURN URI: turn:10.1.102.41:3478
+    * TURN username: jjkim
+    * TURN password: 12345
+    
+
+
+
 
 
 [![Build Status](https://travis-ci.org/coturn/coturn.svg?branch=master)](https://travis-ci.org/coturn/coturn)
