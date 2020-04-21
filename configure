@@ -1098,15 +1098,14 @@ fi
 ###########################
 
 if [ -z "${TURN_NO_PQ}" ] ; then
-
-	testlibpq
-	ER=$?
-	if ! [ ${ER} -eq 0 ] ; then
-		${ECHO_CMD} "PostgreSQL found."
-	else
-		TURN_NO_PQ="-DTURN_NO_PQ"
-	fi
-else
+# 	testlibpq
+# 	ER=$?
+# 	if ! [ ${ER} -eq 0 ] ; then
+# 		${ECHO_CMD} "PostgreSQL found."
+# 	else
+# 		TURN_NO_PQ="-DTURN_NO_PQ"
+# 	fi
+# else
 	TURN_NO_PQ="-DTURN_NO_PQ"
 fi
 

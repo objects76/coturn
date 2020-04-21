@@ -160,8 +160,14 @@ void set_no_stdout_log(int val)
 	no_stdout_log = val;
 }
 
+
 void turn_log_func_default(const char* sfile, int line, TURN_LOG_LEVEL level, const char* format, ...)
 {
+	static __thread int indent = 40;
+	static const char* tabs20 = "  ..  ..  ..  ..  ..  ..  ..  ..  ..  .. ";
+
+	if (format[0] == '}' && indent <= 38) indent += 2;
+	
 #if !defined(TURN_LOG_FUNC_IMPL)
 	{
 		// to log file
@@ -171,7 +177,6 @@ void turn_log_func_default(const char* sfile, int line, TURN_LOG_LEVEL level, co
 		va_end(args);
 	}
 #endif
-
 	{
 		// to stdout.
 		va_list args;
@@ -185,13 +190,13 @@ void turn_log_func_default(const char* sfile, int line, TURN_LOG_LEVEL level, co
 		uint32_t tid = (uint32_t)pthread_self();
 
 		if (level == TURN_LOG_LEVEL_ERROR) {
-			size_t slen = snprintf(s,sizeof(s)-100,"%lu:%u: ERROR: ",(unsigned long)log_time(), tid); // elapsed seconds.
+			size_t slen = snprintf(s,sizeof(s)-100,"%lu:%u: %sERROR: ",(unsigned long)log_time(), tid, &tabs20[indent]); // elapsed seconds.
 			slen += vsnprintf(s+slen,sizeof(s)-slen-1,format, args);
 			slen -=1; // trim '\n'
 			slen += snprintf(s+slen, sizeof(s)-slen-1, " [%s:%d]\n", sfile, line);
 			fwrite(s, slen,1,stdout);
 		} else if(!no_stdout_log) {
-			size_t slen = snprintf(s,sizeof(s)-100,"%lu:%u: ",(unsigned long)log_time(), tid);
+			size_t slen = snprintf(s,sizeof(s)-100,"%lu:%u: %s",(unsigned long)log_time(), tid, &tabs20[indent]);
 			slen += vsnprintf(s+slen,sizeof(s)-slen-1,format, args);
 			slen -=1; // trim '\n'
 			slen += snprintf(s+slen, sizeof(s)-slen-1, " [%s:%d]\n", sfile, line);
@@ -200,6 +205,7 @@ void turn_log_func_default(const char* sfile, int line, TURN_LOG_LEVEL level, co
 #endif
 		va_end(args);
 	}
+	if (format[0] == '{' && indent >= 2) indent -= 2;
 }
 
 void addr_debug_print(int verbose, const ioa_addr *addr, const char* s)

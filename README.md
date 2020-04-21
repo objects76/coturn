@@ -16,12 +16,13 @@
   #sudo apt-get install ginstall
   sudo apt-get install openssl-devel libevent libevent-devel
   sudo apt-get install libssl-dev
-  sudo apt-get install libsqlite3
-  sudo apt-get install sqlite3
   sudo apt-get install libsqlite3-dev
-  sudo apt-get install mysql-client
-  sudo apt-get install libmysqlclient-dev
-  sudo apt-get install libhiredis-dev
+  # Belows are not needed.
+  #sudo apt-get install libsqlite3 * No package.
+  #sudo apt-get install sqlite3
+  #sudo apt-get install mysql-client
+  #sudo apt-get install libmysqlclient-dev
+  #sudo apt-get install libhiredis-dev
   ```
 
 # Build
@@ -37,7 +38,8 @@
 listening-port=3478 
 tls-listening-port=5349 
 listening-ip=10.1.102.41    
-verbose 
+verbose
+Verbose
 lt-cred-mech 
 #use-auth-secret 
 #static-auth-secret=3c3debc794f57330b631d2f03f351d08d1b56694ac4ab819875f0c0f76c0d86c 

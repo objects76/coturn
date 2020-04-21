@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "turnmsglib.h": "c"
+        "turnmsglib.h": "c",
+        "hiredis_libevent2.h": "c",
+        "ns_turn_utils.h": "c",
+        "ns_turn_defs.h": "c"
     }
 }

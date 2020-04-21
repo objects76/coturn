@@ -37,6 +37,7 @@
 #endif
 
 #include "ns_turn_ioaddr.h"
+#include "ns_turn_defs.h" //jjkim
 
 #ifdef __cplusplus
 extern "C" {
