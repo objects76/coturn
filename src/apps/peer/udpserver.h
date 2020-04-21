@@ -48,8 +48,8 @@ typedef struct server_info server_type;
 
 ///////////////////////////////////////////////////
 
-#define FUNCSTART if(server && server->verbose) turn_log_func_default(TURN_LOG_LEVEL_INFO,"%s:%d:start\n",__FUNCTION__,__LINE__)
-#define FUNCEND if(server && server->verbose) turn_log_func_default(TURN_LOG_LEVEL_INFO,"%s:%d:end\n",__FUNCTION__,__LINE__)
+#define FUNCSTART if(server && server->verbose) turn_log_func_default(__FILE__, __LINE__, TURN_LOG_LEVEL_INFO,"%s:%d:start\n",__FUNCTION__,__LINE__)
+#define FUNCEND if(server && server->verbose) turn_log_func_default(__FILE__, __LINE__, TURN_LOG_LEVEL_INFO,"%s:%d:end\n",__FUNCTION__,__LINE__)
 
 ///////////////////////////////////////////////////////
 

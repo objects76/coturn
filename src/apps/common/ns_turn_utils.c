@@ -46,6 +46,8 @@
 
 #include <signal.h>
 
+//#include <sys/types.h> // gettid
+
 ////////// LOG TIME OPTIMIZATION ///////////
 
 static volatile turn_time_t log_start_time = 0;
@@ -158,36 +160,42 @@ void set_no_stdout_log(int val)
 	no_stdout_log = val;
 }
 
-void turn_log_func_default(TURN_LOG_LEVEL level, const char* format, ...)
+void turn_log_func_default(const char* sfile, int line, TURN_LOG_LEVEL level, const char* format, ...)
 {
 #if !defined(TURN_LOG_FUNC_IMPL)
 	{
+		// to log file
 		va_list args;
 		va_start(args,format);
-		vrtpprintf(level, format, args);
+		vrtpprintf(sfile, line, level, format, args);
 		va_end(args);
 	}
 #endif
 
 	{
+		// to stdout.
 		va_list args;
 		va_start(args,format);
 #if defined(TURN_LOG_FUNC_IMPL)
 		TURN_LOG_FUNC_IMPL(level,format,args);
 #else
-#define MAX_RTPPRINTF_BUFFER_SIZE (1024)
+#define MAX_RTPPRINTF_BUFFER_SIZE (1024+256)
 		char s[MAX_RTPPRINTF_BUFFER_SIZE+1];
 #undef MAX_RTPPRINTF_BUFFER_SIZE
+		uint32_t tid = (uint32_t)pthread_self();
+
 		if (level == TURN_LOG_LEVEL_ERROR) {
-			snprintf(s,sizeof(s)-100,"%lu: ERROR: ",(unsigned long)log_time());
-			size_t slen = strlen(s);
-			vsnprintf(s+slen,sizeof(s)-slen-1,format, args);
-			fwrite(s,strlen(s),1,stdout);
+			size_t slen = snprintf(s,sizeof(s)-100,"%lu:%u: ERROR: ",(unsigned long)log_time(), tid); // elapsed seconds.
+			slen += vsnprintf(s+slen,sizeof(s)-slen-1,format, args);
+			slen -=1; // trim '\n'
+			slen += snprintf(s+slen, sizeof(s)-slen-1, " [%s:%d]\n", sfile, line);
+			fwrite(s, slen,1,stdout);
 		} else if(!no_stdout_log) {
-			snprintf(s,sizeof(s)-100,"%lu: ",(unsigned long)log_time());
-			size_t slen = strlen(s);
-			vsnprintf(s+slen,sizeof(s)-slen-1,format, args);
-			fwrite(s,strlen(s),1,stdout);
+			size_t slen = snprintf(s,sizeof(s)-100,"%lu:%u: ",(unsigned long)log_time(), tid);
+			slen += vsnprintf(s+slen,sizeof(s)-slen-1,format, args);
+			slen -=1; // trim '\n'
+			slen += snprintf(s+slen, sizeof(s)-slen-1, " [%s:%d]\n", sfile, line);
+			fwrite(s, slen,1,stdout);
 		}
 #endif
 		va_end(args);
@@ -512,18 +520,18 @@ static int get_syslog_level(TURN_LOG_LEVEL level)
 	return LOG_INFO;
 }
 
-int vrtpprintf(TURN_LOG_LEVEL level, const char *format, va_list args)
+int vrtpprintf(const char* sfile, int line, TURN_LOG_LEVEL level, const char *format, va_list args)
 {
 	/* Fix for Issue 24, raised by John Selbie: */
-#define MAX_RTPPRINTF_BUFFER_SIZE (1024)
+#define MAX_RTPPRINTF_BUFFER_SIZE (1024+256)
 	char s[MAX_RTPPRINTF_BUFFER_SIZE+1];
 #undef MAX_RTPPRINTF_BUFFER_SIZE
 
-	size_t sz;
-
-	snprintf(s, sizeof(s), "%lu: ",(unsigned long)log_time());
-	sz=strlen(s);
-	vsnprintf(s+sz, sizeof(s)-1-sz, format, args);
+	uint32_t tid = (uint32_t) pthread_self();
+	size_t sz = snprintf(s, sizeof(s), "%lu:%u: ",(unsigned long)log_time(), tid);
+	sz += vsnprintf(s+sz, sizeof(s)-1-sz, format, args);
+	sz -=1; // trim '\n'
+	sz += snprintf(s+sz, sizeof(s)-1-sz, " [%s:%d]\n", sfile, line);
 	s[sizeof(s)-1]=0;
 
 	if(to_syslog) {
@@ -542,11 +550,11 @@ int vrtpprintf(TURN_LOG_LEVEL level, const char *format, va_list args)
 	return 0;
 }
 
-void rtpprintf(const char *format, ...)
+void rtpprintf(const char* sfile, int line, const char *format, ...)
 {
 	va_list args;
 	va_start (args, format);
-	vrtpprintf(TURN_LOG_LEVEL_INFO, format, args);
+	vrtpprintf(sfile, line, TURN_LOG_LEVEL_INFO, format, args);
 	va_end (args);
 }
 

@@ -326,7 +326,7 @@ static int run_stunclient_lifetime(int timer,ioa_addr *local_addr, ioa_addr *rem
 	return ret;
 }
 
-#else
+#else // [c]
 
 static int init_socket(int *socketfd, ioa_addr *local_addr, int local_port, ioa_addr *remote_addr){
 	int ret=0;

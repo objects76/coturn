@@ -60,6 +60,9 @@ $ sudo turnadmin -a -u jjkim -r jjkim.com -p 12345
     * TURN password: 12345
     
 
+# Context
+ - rtp,rtcp
+ - server things, db
 
 
 

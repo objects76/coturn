@@ -32,8 +32,8 @@
 #define __TURN_ULIB__
 
 #if !defined(TURN_LOG_FUNC)
-//#define TURN_LOG_FUNC(level, ...) printf (__VA_ARGS__)
-#define TURN_LOG_FUNC turn_log_func_default
+//#define TURN_LOG_FUNC(sflie, line, level, ...) printf (__VA_ARGS__)
+#define TURN_LOG_FUNC(...)     turn_log_func_default(__FILE__, __LINE__, __VA_ARGS__)
 #endif
 
 #include "ns_turn_ioaddr.h"
@@ -61,7 +61,7 @@ void set_no_stdout_log(int val);
 void set_log_to_syslog(int val);
 void set_simple_log(int val);
 
-void turn_log_func_default(TURN_LOG_LEVEL level, const char* format, ...);
+void turn_log_func_default(const char* sfile, int line, TURN_LOG_LEVEL level, const char* format, ...);
 
 void addr_debug_print(int verbose, const ioa_addr *addr, const char* s);
 
@@ -70,8 +70,8 @@ void addr_debug_print(int verbose, const ioa_addr *addr, const char* s);
 extern volatile int _log_time_value_set;
 extern volatile turn_time_t _log_time_value;
 
-void rtpprintf(const char *format, ...);
-int vrtpprintf(TURN_LOG_LEVEL level, const char *format, va_list args);
+void rtpprintf(const char* sfile, int line, const char *format, ...);
+int vrtpprintf(const char* sfile, int line, TURN_LOG_LEVEL level, const char *format, va_list args);
 void reset_rtpprintf(void);
 void set_logfile(const char *fn);
 void rollover_logfile(void);
