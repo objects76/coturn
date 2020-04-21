@@ -60,7 +60,7 @@ static void write_http_echo(ioa_socket_handle s)
 			ioa_network_buffer_handle nbh_http = ioa_network_buffer_allocate(s->e);
 			size_t len_http = ioa_network_buffer_get_size(nbh_http);
 			uint8_t *data = ioa_network_buffer_data(nbh_http);
-			char data_http[1025];
+			char data_http[1025+1024];
 			char content_http[1025];
 			const char* title = "TURN Server";
 			snprintf(content_http,sizeof(content_http)-1,"<!DOCTYPE html>\r\n<html>\r\n  <head>\r\n    <title>%s</title>\r\n  </head>\r\n  <body>\r\n    <b>%s</b> <br> <b><i>use https connection for the admin session</i></b>\r\n  </body>\r\n</html>\r\n",title,title);

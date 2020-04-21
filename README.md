@@ -2,6 +2,7 @@
 # setup dev-env
 * Edit from Windows VSCode.
   * https://code.visualstudio.com/docs/remote/wsl
+  * https://code.visualstudio.com/docs/cpp/config-wsl
   * code --remote wsl+Ubuntu-18.04 /home/jjkim/coturn
 
 * Setup toolchain.
@@ -43,8 +44,14 @@ lt-cred-mech
 server-name=jjkim.com 
 realm=jjkim.com
 
-$ sudo turnadmin -a -u jjkim -r jjkim.com -p 12345
+# run turnadmin with admin.
+$ sudo turnadmin -a -u jjkim -r jjkim.com -p 12345 
 ```
+
+# Coturn debugging
+ - $ turnadmin -a -u jjkim -r jjkim.com -p 12345
+ - $ bin/turnserver -c jjkim/turnserver.config
+
 
 # Coturn checking
  * https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
